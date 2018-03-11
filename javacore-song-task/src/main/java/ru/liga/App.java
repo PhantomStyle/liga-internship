@@ -4,7 +4,7 @@ import ru.liga.songtask.content.Content;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
 /**
- * Всего нот: 15
+ * Всего нот : 15
  * <p>
  * Анализ диапазона:
  * верхняя: E4
