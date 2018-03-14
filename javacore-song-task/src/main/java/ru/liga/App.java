@@ -58,7 +58,7 @@ public class App {
             saver.fullAnalysis(simpleMidiFile);
         }
         if(forSwitch.equals("change -trans 2 -tempo 20")){
-            Changer changer = new Changer(args[0]);
+            Changer changer = new Changer(args[0], args[3], args[5]);
             changer.perform(simpleMidiFile);
         }
     }
