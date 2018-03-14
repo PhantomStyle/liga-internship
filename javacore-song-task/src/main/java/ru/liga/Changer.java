@@ -17,7 +17,7 @@ public class Changer {
     SimpleMidiFile simpleMidiFile;
 
     public Changer(String path) {
-        path = path.replaceAll("\\\\", "/");
+        //path = path.replaceAll("\\\\", "/");
         this.path = path + "\\cranberries-zombie.mid";
         this.path2 = path + "\\zombie-trans2-tempo20.mid";
         simpleMidiFile = new SimpleMidiFile(new File(this.path));
