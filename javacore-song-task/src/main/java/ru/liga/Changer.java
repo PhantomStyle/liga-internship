@@ -1,6 +1,7 @@
 package ru.liga;
 
 import com.leff.midi.event.MidiEvent;
+import com.leff.midi.event.NoteOff;
 import com.leff.midi.event.NoteOn;
 import com.leff.midi.event.meta.Tempo;
 import ru.liga.songtask.domain.Note;
@@ -34,6 +35,10 @@ public class Changer {
             if(event.getClass().equals(NoteOn.class)) {
                 NoteOn noteOn = (NoteOn) event;
                 noteOn.setNoteValue(noteOn.getNoteValue() + trans);
+            }
+            if(event.getClass().equals(NoteOff.class)) {
+                NoteOff noteOff = (NoteOff) event;
+                noteOff.setNoteValue(noteOff.getNoteValue() + trans);
             }
         }
         for(MidiEvent event : simpleMidiFile.getMidiFormat().getTracks().get(0).getEvents()){
