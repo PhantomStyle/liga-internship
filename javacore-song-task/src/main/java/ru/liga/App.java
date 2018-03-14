@@ -42,7 +42,7 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-        SimpleMidiFile simpleMidiFile = new SimpleMidiFile(new File(args[0]));
+        SimpleMidiFile simpleMidiFile = new SimpleMidiFile(new File(args[0] + "\\cranberries-zombie.mid"));
         String forSwitch = "";
         for(int i = 1; i < args.length; i++){
            forSwitch += args[i] + " ";
@@ -58,7 +58,7 @@ public class App {
             saver.fullAnalysis(simpleMidiFile);
         }
         if(forSwitch.equals("change -trans 2 -tempo 20")){
-            Changer changer = new Changer();
+            Changer changer = new Changer(args[0]);
             changer.perform(simpleMidiFile);
         }
     }

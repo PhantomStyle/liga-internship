@@ -12,9 +12,16 @@ import java.util.List;
 
 public class Changer {
 
-    String path = "E:/FOR_WORK/Программирование/Java/Стажировка/liga-internship2/javacore-song-task/src/main/resources/cranberries-zombie.mid";
-    String path2 = "E:/FOR_WORK/Программирование/Java/Стажировка/liga-internship2/javacore-song-task/src/main/resources/zombie-trans2-tempo20.mid";
-    SimpleMidiFile simpleMidiFile = new SimpleMidiFile(new File(path));
+    String path = "";
+    String path2 = "";
+    SimpleMidiFile simpleMidiFile;
+
+    public Changer(String path) {
+        path = path.replaceAll("\\\\", "/");
+        this.path = path + "\\cranberries-zombie.mid";
+        this.path2 = path + "\\zombie-trans2-tempo20.mid";
+        simpleMidiFile = new SimpleMidiFile(new File(this.path));
+    }
 
     public void perform(SimpleMidiFile simpleMidiFile) throws IOException {
         List<Note> notes = simpleMidiFile.vocalNoteList();
