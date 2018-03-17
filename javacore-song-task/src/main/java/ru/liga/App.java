@@ -1,15 +1,14 @@
 package ru.liga;
 
-import ru.liga.songtask.content.Content;
-import ru.liga.songtask.domain.Note;
+import ru.liga.engine.Changer;
+import ru.liga.engine.Engine;
+import ru.liga.engine.Path;
+import ru.liga.engine.savers.LogSaver;
+import ru.liga.engine.savers.Save;
+import ru.liga.engine.savers.TextSaver;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Всего нот: 15
@@ -36,30 +35,29 @@ import org.slf4j.LoggerFactory;
  * 11: 2
  */
 public class App {
-    protected static Logger logger = LoggerFactory.getLogger(App.class);
 
-    private static Save saver;
 
     public static void main(String[] args) throws IOException {
+        Engine.path = new Path(args[0]);
+        Engine.simpleMidiFile = new SimpleMidiFile(new File(Engine.path.getInPath()));
 
-        SimpleMidiFile simpleMidiFile = new SimpleMidiFile(new File(args[0] + "\\cranberries-zombie.mid"));
         String forSwitch = "";
-        for(int i = 1; i < args.length; i++){
-           forSwitch += args[i] + " ";
+        for (int i = 1; i < args.length; i++) {
+            forSwitch += args[i] + " ";
         }
         forSwitch = forSwitch.trim();
 
-        if(forSwitch.equals("analyze -f")){
-            saver = new TextSaver();
-            saver.fullAnalysis(simpleMidiFile);
+        if (forSwitch.equals("analyze -f")) {
+            Engine.saver = new TextSaver();
+            Engine.saver.fullAnalysis(Engine.simpleMidiFile);
         }
-        if(forSwitch.equals("analyze")){
-            saver = new LogSaver();
-            saver.fullAnalysis(simpleMidiFile);
+        if (forSwitch.equals("analyze")) {
+            Engine.saver = new LogSaver();
+            Engine.saver.fullAnalysis(Engine.simpleMidiFile);
         }
-        if(forSwitch.equals("change -trans 2 -tempo 20")){
-            Changer changer = new Changer(args[0], args[3], args[5]);
-            changer.perform(simpleMidiFile);
+        if (forSwitch.contains("change")) {
+            Engine.changer = new Changer(args[3], args[5]);
+            Engine.changer.perform(Engine.simpleMidiFile);
         }
     }
 }

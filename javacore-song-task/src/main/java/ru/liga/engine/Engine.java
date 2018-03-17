@@ -1,22 +1,38 @@
-package ru.liga;
+package ru.liga.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.liga.App;
+import ru.liga.engine.savers.Save;
+import ru.liga.engine.savers.TextSaver;
 import ru.liga.songtask.domain.Note;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Engine {
-    public String amountOfNotes(SimpleMidiFile simpleMidiFile){
+
+    public static final Engine engine = new Engine();
+    public static final Logger appLogger = LoggerFactory.getLogger(App.class);
+    public static final Logger textSaverLogger = LoggerFactory.getLogger(TextSaver.class);
+    public static final Logger changerLogger = LoggerFactory.getLogger(Changer.class);
+    public static Save saver;
+    public static Changer changer;
+    public static Path path;
+    public static SimpleMidiFile simpleMidiFile;
+
+    public String amountOfNotes(SimpleMidiFile simpleMidiFile) {
         return "Всего нот: " + simpleMidiFile.vocalNoteList().size() + "\r\n";
     }
 
-    public String durability(SimpleMidiFile simpleMidiFile){
+    public String durability(SimpleMidiFile simpleMidiFile) {
         return "Длительность (сек): " + simpleMidiFile.durationMs() / 1000 + "\r\n";
     }
 
-    public String rangeAnalysis(SimpleMidiFile simpleMidiFile){
+    public String rangeAnalysis(SimpleMidiFile simpleMidiFile) {
         List<Note> notes = simpleMidiFile.vocalNoteList();
         Note minNote = notes.get(0);
         Note maxNote = notes.get(0);
@@ -35,7 +51,7 @@ public class Engine {
 
     }
 
-    public String noteDurationAnalysis(SimpleMidiFile simpleMidiFile){
+    public String noteDurationAnalysis(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("Анализ длительности нот (мс):\r\n");
         List<Note> notes = simpleMidiFile.vocalNoteList();
         Map<Long, Integer> durations = new HashMap<>();
@@ -53,7 +69,7 @@ public class Engine {
         return result.toString();
     }
 
-    public String analysisByHeight(SimpleMidiFile simpleMidiFile){
+    public String analysisByHeight(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("<p>\r\nАнализ нот по высоте::");
         List<Note> notes = simpleMidiFile.vocalNoteList();
         Map<String, Integer> heights = new HashMap<>();
@@ -71,7 +87,7 @@ public class Engine {
         return result.toString();
     }
 
-    public String intervalAnalysis(SimpleMidiFile simpleMidiFile){
+    public String intervalAnalysis(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("<p>\r\nАнализ интервалов:");
         List<Note> notes = simpleMidiFile.vocalNoteList();
         Map<Integer, Integer> intervals = new HashMap<>();
