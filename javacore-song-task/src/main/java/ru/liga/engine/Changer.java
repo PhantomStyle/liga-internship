@@ -37,7 +37,7 @@ public class Changer {
             }
         }
         try {
-            simpleMidiFile.getMidiFormat().writeToFile(new File(Engine.path.getOutPath() + "\\zombie-trans2-tempo20.mid"));
+            simpleMidiFile.getMidiFormat().writeToFile(new File(Engine.myPath.getOutPath() + "\\zombie-trans2-tempo20.mid"));
         } catch (IOException e) {
             Engine.changerLogger.info(e.getMessage());
         }

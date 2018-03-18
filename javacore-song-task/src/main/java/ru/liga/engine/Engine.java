@@ -8,7 +8,6 @@ import ru.liga.engine.savers.TextSaver;
 import ru.liga.songtask.domain.Note;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +20,29 @@ public class Engine {
     public static final Logger changerLogger = LoggerFactory.getLogger(Changer.class);
     public static Save saver;
     public static Changer changer;
-    public static Path path;
+    public static MyPath myPath;
     public static SimpleMidiFile simpleMidiFile;
+
+    private Note maxNote;
+    private Note minNote;
+
+
+    public Note getMaxNote() {
+        return maxNote;
+    }
+
+    public Note getMinNote() {
+        return minNote;
+    }
 
     public String amountOfNotes(SimpleMidiFile simpleMidiFile) {
         return "Всего нот: " + simpleMidiFile.vocalNoteList().size() + "\r\n";
     }
 
+    /**
+     * @param simpleMidiFile
+     * @return durability of your midi file
+     */
     public String durability(SimpleMidiFile simpleMidiFile) {
         return "Длительность (сек): " + simpleMidiFile.durationMs() / 1000 + "\r\n";
     }
@@ -43,6 +58,8 @@ public class Engine {
             if (note.sign().lower(minNote.sign())) {
                 minNote = note;
             }
+            this.maxNote = maxNote;
+            this.minNote = minNote;
         }
         return "<p>\r\nАнализ диапазона:" + "\r\n"
                 + "верхняя: " + maxNote.sign().fullName() + "\r\n"
@@ -105,5 +122,4 @@ public class Engine {
         }
         return result.toString();
     }
-
 }

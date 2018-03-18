@@ -12,7 +12,7 @@ public class TextSaver implements Save {
     @Override
     public void fullAnalysis(SimpleMidiFile simpleMidiFile) {
 
-        try (PrintStream out = new PrintStream(new FileOutputStream(Engine.path.getOutPath() + "\\filename.txt"))) {
+        try (PrintStream out = new PrintStream(new FileOutputStream(Engine.myPath.getOutPath() + "\\filename.txt"))) {
             out.print(Engine.engine.amountOfNotes(simpleMidiFile));
             out.print(Engine.engine.durability(simpleMidiFile));
             out.print(Engine.engine.rangeAnalysis(simpleMidiFile));

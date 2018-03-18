@@ -2,9 +2,8 @@ package ru.liga;
 
 import ru.liga.engine.Changer;
 import ru.liga.engine.Engine;
-import ru.liga.engine.Path;
+import ru.liga.engine.MyPath;
 import ru.liga.engine.savers.LogSaver;
-import ru.liga.engine.savers.Save;
 import ru.liga.engine.savers.TextSaver;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
@@ -38,8 +37,8 @@ public class App {
 
 
     public static void main(String[] args) throws IOException {
-        Engine.path = new Path(args[0]);
-        Engine.simpleMidiFile = new SimpleMidiFile(new File(Engine.path.getInPath()));
+        Engine.myPath = new MyPath(args[0]);
+        Engine.simpleMidiFile = new SimpleMidiFile(new File(Engine.myPath.getInPath()));
 
         String forSwitch = "";
         for (int i = 1; i < args.length; i++) {
