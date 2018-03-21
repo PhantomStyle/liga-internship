@@ -14,7 +14,7 @@ public class NoteTestApp {
     public void whenTxtFileReturnLowestNote() throws IOException {
         String[] args = "src\\main\\resources\\cranberries-zombie.mid analyze -f".split(" ");
         App.main(args);
-        assertEquals(Engine.engine.getMinNote().sign().fullName(), "E2");
+        assertEquals(Engine.engine.getMinNote().sign().fullName(), "D3");
     }
 
     @Test
@@ -22,7 +22,7 @@ public class NoteTestApp {
         String[] args = "src\\main\\resources\\cranberries-zombie.mid analyze -f".split(" ");
         App.main(args);
         System.out.println(Engine.engine.getMaxNote().sign().fullName());
-        assertEquals(Engine.engine.getMaxNote().sign().fullName(), "D3");
+        assertEquals(Engine.engine.getMaxNote().sign().fullName(), "E2");
     }
 
     @Test

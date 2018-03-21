@@ -1,5 +1,6 @@
 package ru.liga.engine;
 
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.liga.App;
@@ -8,8 +9,8 @@ import ru.liga.engine.savers.TextSaver;
 import ru.liga.songtask.domain.Note;
 import ru.liga.songtask.domain.SimpleMidiFile;
 
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Engine {
@@ -48,19 +49,10 @@ public class Engine {
     }
 
     public String rangeAnalysis(SimpleMidiFile simpleMidiFile) {
-        List<Note> notes = simpleMidiFile.vocalNoteList();
-        Note minNote = notes.get(0);
-        Note maxNote = notes.get(0);
-        for (Note note : notes) {
-            if (note.sign().higher(maxNote.sign())) {
-                maxNote = note;
-            }
-            if (note.sign().lower(minNote.sign())) {
-                minNote = note;
-            }
-            this.maxNote = maxNote;
-            this.minNote = minNote;
-        }
+        Note minNote = simpleMidiFile.vocalNoteList().stream().min(Comparator.comparing(Note::sign)).get();
+        Note maxNote = simpleMidiFile.vocalNoteList().stream().max(Comparator.comparing(Note::sign)).get();
+        this.minNote = minNote;
+        this.maxNote = maxNote;
         return "<p>\r\nАнализ диапазона:" + "\r\n"
                 + "верхняя: " + maxNote.sign().fullName() + "\r\n"
                 + "нижняя: " + minNote.sign().fullName() + "\r\n"
@@ -70,16 +62,18 @@ public class Engine {
 
     public String noteDurationAnalysis(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("Анализ длительности нот (мс):\r\n");
-        List<Note> notes = simpleMidiFile.vocalNoteList();
         Map<Long, Integer> durations = new HashMap<>();
-        for (Note note : notes) {
-            if (durations.containsKey(note.durationTicks())) {
-                int temp = durations.get(note.durationTicks());
-                durations.put(note.durationTicks(), ++temp);
-            } else {
-                durations.put(note.durationTicks(), 1);
-            }
-        }
+        simpleMidiFile.vocalNoteList().stream()
+                .map(Note::durationTicks)
+                .map(durationTicks -> (long) (durationTicks * simpleMidiFile.tickInMs()))
+                .map(duration -> {
+                    int count = 0;
+                    if (durations.containsKey(duration)) {
+                        count = durations.get(duration);
+                    }
+                    return new Pair<>(duration, ++count);
+                }).forEach(keyValue -> durations.put(keyValue.getKey(), keyValue.getValue()));
+
         for (Map.Entry<Long, Integer> entry : durations.entrySet()) {
             result.append((int) (entry.getKey() * simpleMidiFile.tickInMs()) + ": " + entry.getValue() + "\r\n");
         }
@@ -88,17 +82,17 @@ public class Engine {
 
     public String analysisByHeight(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("<p>\r\nАнализ нот по высоте::");
-        List<Note> notes = simpleMidiFile.vocalNoteList();
-        Map<String, Integer> heights = new HashMap<>();
-        for (Note note : notes) {
-            if (heights.containsKey(note.sign().fullName())) {
-                int temp = heights.get(note.sign().fullName());
-                heights.put(note.sign().fullName(), ++temp);
-            } else {
-                heights.put(note.sign().fullName(), 1);
-            }
-        }
-        for (Map.Entry<String, Integer> entry : heights.entrySet()) {
+        Map<String, Long> heights = new HashMap<>();
+        simpleMidiFile.vocalNoteList().stream()
+                .map(note -> {
+                    long count = 0;
+                    if (heights.containsKey(note.sign().fullName())) {
+                        count = heights.get(note.sign().fullName());
+                    }
+                    return new Pair<>(note.sign().fullName(), ++count);
+                }).forEach(keyValue -> heights.put(keyValue.getKey(), keyValue.getValue()));
+
+        for (Map.Entry<String, Long> entry : heights.entrySet()) {
             result.append(entry.getKey() + ": " + entry.getValue() + "\r\n");
         }
         return result.toString();
@@ -106,17 +100,26 @@ public class Engine {
 
     public String intervalAnalysis(SimpleMidiFile simpleMidiFile) {
         StringBuilder result = new StringBuilder("<p>\r\nАнализ интервалов:");
-        List<Note> notes = simpleMidiFile.vocalNoteList();
         Map<Integer, Integer> intervals = new HashMap<>();
-        for (int i = 0; i < notes.size() - 1; i++) {
-            int interval = notes.get(i).sign().diffInSemitones(notes.get(i + 1).sign());
-            if (intervals.containsKey(interval)) {
-                int temp = intervals.get(interval);
-                intervals.put(interval, ++temp);
-            } else {
-                intervals.put(interval, 1);
-            }
-        }
+        final Note[] predNote = new Note[1];
+        simpleMidiFile.vocalNoteList().stream()
+                .filter(note -> {
+                    if (predNote[0] == null) {
+                        predNote[0] = note;
+                        return false;
+                    }
+                    return true;
+                })
+                .map(note -> {
+                    int count = 0;
+                    int diff = note.sign().diffInSemitones(predNote[0].sign());
+                    if (intervals.containsKey(diff)) {
+                        count = intervals.get(diff);
+                    }
+                    predNote[0] = note;
+                    return new Pair<>(diff, ++count);
+                }).forEach(keyValue -> intervals.put(keyValue.getKey(), keyValue.getValue()));
+
         for (Map.Entry<Integer, Integer> entry : intervals.entrySet()) {
             result.append(entry.getKey() + ": " + entry.getValue() + "\r\n");
         }
