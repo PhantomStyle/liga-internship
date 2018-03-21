@@ -34,8 +34,6 @@ import java.io.*;
  * 2: 20
  */
 public class App {
-
-
     public static void main(String[] args) throws IOException {
         Engine.myPath = new MyPath(args[0]);
         Engine.simpleMidiFile = new SimpleMidiFile(new File(Engine.myPath.getInPath()));
